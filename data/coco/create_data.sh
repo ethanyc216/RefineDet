@@ -3,8 +3,11 @@ root_dir=$cur_dir/../..
 
 cd $root_dir
 
+export PYTHONPATH=$root_dir/python:$PYTHONPATH
+export LD_LIBRARY_PATH=$HOME/.apps/cudnn-v5/lib64:$HOME/.apps/opencv2/lib:$HOME/.apps/anaconda2/lib:/usr/local/cuda-9.1/lib64:/usr/lib64:$LD_LIBRARY_PATH
+
 redo=false
-data_root_dir="$HOME/data/Object_Detection/coco"
+data_root_dir="$HOME/data/coco"
 dataset_name="coco"
 mapfile="$root_dir/data/$dataset_name/labelmap_coco.prototxt"
 anno_type="detection"

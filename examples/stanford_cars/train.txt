@@ -1,0 +1,1 @@
+/ssd/fzhou/stanford_cars/devkit/train.txt

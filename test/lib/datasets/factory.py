@@ -11,6 +11,8 @@ __sets = {}
 
 from datasets.pascal_voc import pascal_voc
 from datasets.coco import coco
+from datasets.ccar import ccar
+from datasets.lot import lot
 import numpy as np
 
 # Set up voc_<year>_<split> using selective search "fast" mode
@@ -19,12 +21,23 @@ for year in ['2007', '2012', '0712']:
         name = 'voc_{}_{}'.format(year, split)
         __sets[name] = (lambda split=split, year=year: pascal_voc(split, year))
 
-
 # Set up coco_2014_<split>
 for year in ['2014']:
     for split in ['train', 'val', 'minival', 'valminusminival']:
         name = 'coco_{}_{}'.format(year, split)
         __sets[name] = (lambda split=split, year=year: coco(split, year))
+
+# Set up ccar_2017_<split>
+for year in ['2017']:
+    for split in ['train', 'val']:
+        name = 'ccar_{}_{}'.format(year, split)
+        __sets[name] = (lambda split=split, year=year: ccar(split, year))
+
+# Set up lot_2500_<split>
+for year in ['2500']:
+    for split in ['train', 'val']:
+        name = 'lot_{}{}'.format(split, year)
+        __sets[name] = (lambda split=split, year=year: lot(split, year))
 
 # Set up coco_2015_<split>
 for year in ['2015']:

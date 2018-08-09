@@ -1,7 +1,8 @@
 '''
 In this example, we will load a RefineDet model and use it to detect objects.
 '''
-
+import matplotlib
+matplotlib.use('Agg')
 import argparse
 import os
 import sys
@@ -78,13 +79,16 @@ if __name__ == '__main__':
 
     # load labelmap
     labelmap_file = 'data/VOC0712/labelmap_voc.prototxt'
+    labelmap_file = 'data/coco/labelmap_coco.prototxt'
     file = open(labelmap_file, 'r')
     labelmap = caffe_pb2.LabelMap()
     text_format.Merge(str(file.read()), labelmap)
 
     # load model
     model_def = 'models/VGGNet/VOC0712/refinedet_vgg16_320x320/deploy.prototxt'
+    model_def = 'models/VGGNet/coco/refinedet_vgg16_320x320/deploy.prototxt'
     model_weights = 'models/VGGNet/VOC0712/refinedet_vgg16_320x320/VOC0712_refinedet_vgg16_320x320_final.caffemodel'
+    model_weights = 'models/VGGNet/coco/refinedet_vgg16_320x320/coco_refinedet_vgg16_320x320_final.caffemodel'
     net = caffe.Net(model_def, model_weights, caffe.TEST)
 
     # image preprocessing
@@ -101,6 +105,7 @@ if __name__ == '__main__':
 
     # im_names = os.listdir('examples/images')
     im_names = ['000456.jpg', '000542.jpg', '001150.jpg', '001763.jpg', '004545.jpg']
+    im_names = ['ch12_1.jpg', 'ch12_2.jpg', 'ch13_1.jpg']
     for im_name in im_names:
         image_file = 'examples/images/' + im_name
         image = caffe.io.load_image(image_file)

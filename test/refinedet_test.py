@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+import matplotlib
+matplotlib.use('Agg')
 import _init_paths
 from fast_rcnn.test import single_scale_test_net, multi_scale_test_net_320, multi_scale_test_net_512
 from fast_rcnn.config import cfg, cfg_from_file, cfg_from_list
@@ -8,15 +11,23 @@ import os
 if __name__ == '__main__':
     GPU_ID = 0
     single_scale = True # True: sinle scale test;  False: multi scale test
-    test_set = 'voc_2007_test' # 'voc_2007_test' or 'voc_2012_test' or 'coco_2014_minival' or 'coco_2015_test-dev'
+    # test_set = 'voc_2007_test' # 'voc_2007_test' or 'voc_2012_test' or 'coco_2014_minival' or 'coco_2015_test-dev'
+    # test_set = 'coco_2014_minival'
+    test_set = 'ccar_2017_val'
+    test_set = 'lot_val2500'
     voc_path = 'models/VGGNet/VOC0712/refinedet_vgg16_320x320/'
     coco_path = 'models/VGGNet/coco/refinedet_vgg16_320x320/'
+    ccar_path = 'models/VGGNet/ccar/refinedet_vgg16_320x320/'
 
     cfg.single_scale_test = single_scale
     if 'voc' in test_set:
         path = voc_path
-    else:
+    elif 'coco' in test_set:
         path = coco_path
+    elif 'lot' in test_set:
+        path = ccar_path
+    elif 'ccar' in test_set:
+        path = ccar_path
 
     if '320' in path:
         input_size = 320
@@ -29,7 +40,7 @@ if __name__ == '__main__':
     imdb = get_imdb(test_set)
     imdb.competition_mode(False)
 
-    if 'coco' in test_set:
+    if 'coco' in test_set or 'ccar' in test_set:
         if single_scale is True:
             prototxt = path + 'single_test_deploy.prototxt'
         else:
@@ -45,7 +56,7 @@ if __name__ == '__main__':
 
     mAP = {}
     for model in models:
-        if model.find('caffemodel') == -1:
+        if model.find('final.caffemodel') == -1:
             continue
         caffemodel = path + model
         print('Start evaluating: ' + caffemodel)
@@ -57,7 +68,7 @@ if __name__ == '__main__':
         except:
             iter = 000000
         if single_scale is True:
-            single_scale_test_net(net, imdb, targe_size=input_size)
+            single_scale_test_net(net, imdb, targe_size=input_size, vis=True)
         else:
             if input_size == 320:
                 multi_scale_test_net_320(net, imdb)

@@ -42,7 +42,7 @@ def _filter_crowd_proposals(roidb, crowd_thresh):
         roidb[ix]['gt_overlaps'] = scipy.sparse.csr_matrix(overlaps)
     return roidb
 
-class coco(imdb):
+class ccar(imdb):
     def __init__(self, image_set, year):
         imdb.__init__(self, 'coco_' + year + '_' + image_set)
         # COCO specific config options
@@ -55,7 +55,7 @@ class coco(imdb):
         # name, paths
         self._year = year
         self._image_set = image_set
-        self._data_path = os.environ['HOME'] + '/data/coco'
+        self._data_path = os.environ['HOME'] + '/data/ccar'
         # load COCO API, classes, class <-> id mappings
         self._COCO = COCO(self._get_ann_file())
         cats = self._COCO.loadCats(self._COCO.getCatIds())
@@ -72,9 +72,8 @@ class coco(imdb):
         # For example, minival2014 is a random 5000 image subset of val2014.
         # This mapping tells us where the view's images and proposals come from.
         self._view_map = {
-            'minival2014' : 'val2014',          # 5k val2014 subset
-            'valminusminival2014' : 'val2014',  # val2014 \setminus minival2014
-            'test-dev2015' : 'test2015',
+            'val2017' : 'val2017',          # 5k val2014 subset
+            'train2017' : 'train2017',  # val2014 \setminus minival2014
         }
         coco_name = image_set + year  # e.g., "val2014"
         self._data_name = (self._view_map[coco_name]
@@ -85,7 +84,7 @@ class coco(imdb):
         self._gt_splits = ('train', 'val', 'minival')
 
     def _get_ann_file(self):
-        prefix = 'instances' if self._image_set.find('test') == -1 \
+        prefix = 'instances_car' if self._image_set.find('test') == -1 \
                              else 'image_info'
         return osp.join(self._data_path, 'annotations',
                         prefix + '_' + self._image_set + self._year + '.json')
@@ -114,8 +113,7 @@ class coco(imdb):
         """
         # Example image path for index=119993:
         #   images/train2014/COCO_train2014_000000119993.jpg
-        file_name = ('COCO_' + self._data_name + '_' +
-                     str(index).zfill(12) + '.jpg')
+        file_name = (str(index).zfill(12) + '.jpg')
         image_path = osp.join(self._data_path,
                               self._data_name, file_name)
         assert osp.exists(image_path), \

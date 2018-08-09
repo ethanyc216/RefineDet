@@ -90,7 +90,7 @@ def flip_im_detect_ratio(net, im, targe_size1, targe_size2):
     return det_t
 
 
-def vis_detections(im, class_name, dets, thresh=0.1):
+def vis_detections(im, class_name, dets, img_id, thresh=0.1):
     """Visual debugging of detections."""
     index = np.where(dets[:, -1] > thresh)[0]
     if index.shape[0] == 0:
@@ -111,6 +111,9 @@ def vis_detections(im, class_name, dets, thresh=0.1):
             )
         plt.text(bbox[0], bbox[1], '{}  {:.3f}'.format(class_name, score), color='r')
     plt.show()
+    if not os.path.exists('tmp/'):
+        os.mkdir('tmp/')
+    plt.savefig('tmp/' + '{}_dets.jpg'.format(img_id), bbox_inches="tight")
 
 
 def bbox_vote(det):
@@ -230,7 +233,7 @@ def single_scale_test_net(net, imdb, targe_size=320, vis=False):
                     cls_dets = cls_dets[keep, :]
                 all_boxes[j][i] = cls_dets
                 if vis:
-                    vis_detections(im, imdb.classes[j], cls_dets)
+                    vis_detections(im, imdb.classes[j], cls_dets, i)
 
         print 'im_detect: {:d}/{:d}'.format(i + 1, num_images)
 
