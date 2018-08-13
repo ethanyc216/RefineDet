@@ -1,5 +1,4 @@
 /tmp/*
 *lmdb
-/models/*
 /test/output/*
 /jobs/*
