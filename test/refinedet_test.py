@@ -19,11 +19,10 @@ if __name__ == '__main__':
     # test_set = 'voc_2007_test' # 'voc_2007_test' or 'voc_2012_test' or 'coco_2014_minival' or 'coco_2015_test-dev'
     # test_set = 'coco_2014_minival'
     test_set = 'ccar_2017_val'
-    test_set = 'lot_val2500'
+    # test_set = 'lot_val2500'
     voc_path = 'models/VGGNet/VOC0712/refinedet_vgg16_320x320/'
     coco_path = 'models/VGGNet/coco/refinedet_vgg16_320x320/'
-    # ccar_path = 'models/VGGNet/ccar/refinedet_vgg16_320x320/'
-    ccar_path = 'models/VGGNet/v1/refinedet_vgg16_512x512_ft/'
+    ccar_path = 'models/VGGNet/v1/refinedet_vgg16_320x320/'
 
     cfg.single_scale_test = single_scale
     if 'voc' in test_set:
