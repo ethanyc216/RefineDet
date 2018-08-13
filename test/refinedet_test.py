@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import matplotlib
 matplotlib.use('Agg')
+import argparse
 import _init_paths
 from fast_rcnn.test import single_scale_test_net, multi_scale_test_net_320, multi_scale_test_net_512
 from fast_rcnn.config import cfg, cfg_from_file, cfg_from_list
@@ -9,7 +10,11 @@ import caffe
 import os
 
 if __name__ == '__main__':
-    GPU_ID = 0
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--gpu', type=int, default=0)
+    parser.add_argument('--save_fig', action='store_true')
+    args = parser.parse_args()
+
     single_scale = True # True: sinle scale test;  False: multi scale test
     # test_set = 'voc_2007_test' # 'voc_2007_test' or 'voc_2012_test' or 'coco_2014_minival' or 'coco_2015_test-dev'
     # test_set = 'coco_2014_minival'
@@ -17,7 +22,8 @@ if __name__ == '__main__':
     test_set = 'lot_val2500'
     voc_path = 'models/VGGNet/VOC0712/refinedet_vgg16_320x320/'
     coco_path = 'models/VGGNet/coco/refinedet_vgg16_320x320/'
-    ccar_path = 'models/VGGNet/ccar/refinedet_vgg16_320x320/'
+    # ccar_path = 'models/VGGNet/ccar/refinedet_vgg16_320x320/'
+    ccar_path = 'models/VGGNet/v1/refinedet_vgg16_512x512_ft/'
 
     cfg.single_scale_test = single_scale
     if 'voc' in test_set:
@@ -35,14 +41,14 @@ if __name__ == '__main__':
         input_size = 512
 
     caffe.set_mode_gpu()
-    caffe.set_device(GPU_ID)
+    caffe.set_device(args.gpu)
 
     imdb = get_imdb(test_set)
     imdb.competition_mode(False)
 
     if 'coco' in test_set or 'ccar' in test_set:
         if single_scale is True:
-            prototxt = path + 'single_test_deploy.prototxt'
+            prototxt = path + 'deploy.prototxt'
         else:
             prototxt = path + 'multi_test_deploy.prototxt'
         f = open(prototxt, 'r')
@@ -58,6 +64,8 @@ if __name__ == '__main__':
     for model in models:
         if model.find('final.caffemodel') == -1:
             continue
+        # if model.find('3000.caffemodel') == -1:
+        #     continue
         caffemodel = path + model
         print('Start evaluating: ' + caffemodel)
         net = caffe.Net(prototxt, caffemodel, caffe.TEST)

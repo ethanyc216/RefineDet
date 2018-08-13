@@ -72,8 +72,8 @@ class lot(imdb):
         # For example, minival2014 is a random 5000 image subset of val2014.
         # This mapping tells us where the view's images and proposals come from.
         self._view_map = {
-            'val2500' : 'val2500',          # 5k val2014 subset
-            'train2500' : 'train2500',  # val2014 \setminus minival2014
+            'val2500' : 'val2500',
+            'train2500' : 'train2500',
         }
         coco_name = image_set + year  # e.g., "val2014"
         self._data_name = (self._view_map[coco_name]
@@ -81,11 +81,9 @@ class lot(imdb):
                            else coco_name)
         # Dataset splits that have ground-truth annotations (test splits
         # do not have gt annotations)
-        self._gt_splits = ('train', 'val', 'minival')
+        self._gt_splits = ('train', 'val')
 
     def _get_ann_file(self):
-        prefix = 'instances_car' if self._image_set.find('test') == -1 \
-                             else 'image_info'
         return osp.join(self._data_path, 'annotations',
                         self._image_set + self._year + '.json')
 
