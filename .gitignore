@@ -2,3 +2,5 @@
 *lmdb
 /test/output/*
 /jobs/*
+python/caffe/proto/__init__.py
+/python/caffe/proto/caffe_pb2.py
