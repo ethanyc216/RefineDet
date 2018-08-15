@@ -8,11 +8,12 @@
 set -e
 
 export APPS=${HOME}/.apps
+[ ! -d ${APPS} ] && mkdir -p $APPS
 
 # download source
 cd /tmp
 # wget https://github.com/opencv/opencv/archive/2.4.13.6.zip
-cp /mnt/soulfs2/fzhou/opencv-2.4.13.6.zip .
+cp /mnt/soulfs2/fzhou/software/opencv-2.4.13.6.zip .
 [ -d opencv-2.4.13.6 ] && rm -fr opencv-2.4.13.6
 unzip -q opencv-2.4.13.6.zip
 
