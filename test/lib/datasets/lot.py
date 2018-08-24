@@ -43,8 +43,8 @@ def _filter_crowd_proposals(roidb, crowd_thresh):
     return roidb
 
 class lot(imdb):
-    def __init__(self, image_set, year):
-        imdb.__init__(self, 'lot_' + year + '_' + image_set)
+    def __init__(self, image_set, data_path):
+        imdb.__init__(self, 'lot_' + image_set)
         # COCO specific config options
         self.config = {'top_k' : 2000,
                        'use_salt' : True,
@@ -53,9 +53,9 @@ class lot(imdb):
                        'rpn_file': None,
                        'min_size' : 2}
         # name, paths
-        self._year = year
         self._image_set = image_set
-        self._data_path = os.environ['HOME'] + '/data/lot'
+        self._data_path = data_path
+
         # load COCO API, classes, class <-> id mappings
         self._COCO = COCO(self._get_ann_file())
         cats = self._COCO.loadCats(self._COCO.getCatIds())
@@ -64,6 +64,7 @@ class lot(imdb):
         self._class_to_coco_cat_id = dict(zip([c['name'] for c in cats],
                                               self._COCO.getCatIds()))
         self._image_index = self._load_image_set_index()
+
         # Default to roidb handler
         self.set_proposal_method('selective_search')
         self.competition_mode(False)
@@ -75,7 +76,7 @@ class lot(imdb):
             'val2500' : 'val2500',
             'train2500' : 'train2500',
         }
-        coco_name = image_set + year  # e.g., "val2014"
+        coco_name = image_set  # e.g., "val2014"
         self._data_name = (self._view_map[coco_name]
                            if self._view_map.has_key(coco_name)
                            else coco_name)
@@ -85,7 +86,7 @@ class lot(imdb):
 
     def _get_ann_file(self):
         return osp.join(self._data_path, 'annotations',
-                        self._image_set + self._year + '.json')
+                        self._image_set + '.json')
 
     def _load_image_set_index(self):
         """
@@ -114,7 +115,7 @@ class lot(imdb):
         # file_name = (str(index).zfill(12) + '.jpg')
         file_name = self._COCO.imgs[index]['file_name']
         image_path = osp.join(self._data_path,
-                              'frames', file_name)
+                              'images', file_name)
         assert osp.exists(image_path), \
                 'Path does not exist: {}'.format(image_path)
         return image_path
@@ -406,7 +407,6 @@ class lot(imdb):
     def evaluate_detections(self, all_boxes, output_dir):
         res_file = osp.join(output_dir, ('detections_' +
                                          self._image_set +
-                                         self._year +
                                          '_results'))
         if self.config['use_salt']:
             res_file += '_{}'.format(str(uuid.uuid4()))

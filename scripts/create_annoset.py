@@ -3,7 +3,6 @@ import os
 import shutil
 import subprocess
 import sys
-sys.path.append("/home/shifeng/Code/Object_Detection/SSD/python")
 
 from caffe.proto import caffe_pb2
 from google.protobuf import text_format

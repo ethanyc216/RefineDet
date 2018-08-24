@@ -219,27 +219,31 @@ def single_scale_test_net(net, imdb, targe_size=320, vis=False):
     num_images = len(imdb.image_index)
     all_boxes = [[[] for _ in xrange(num_images)] for _ in xrange(imdb.num_classes)]
     output_dir = get_output_dir(imdb, net)
+    det_file = os.path.join(output_dir, 'detections.pkl')
 
-    for i in xrange(num_images):
-        im = cv2.imread(imdb.image_path_at(i))
-        det = im_detect(net, im, targe_size)
+    if os.path.exists(det_file):
+        # load
+        with open(det_file) as fio:
+            all_boxes = cPickle.load(fio)
+    else:
+        for i in xrange(num_images):
+            im = cv2.imread(imdb.image_path_at(i))
+            det = im_detect(net, im, targe_size)
 
-        for j in xrange(1, imdb.num_classes):
-            inds = np.where(det[:, -1] == j)[0]
-            if inds.shape[0] > 0:
-                cls_dets = det[inds, :-1].astype(np.float32)
-                if 'coco' in imdb.name:
+            for j in xrange(1, imdb.num_classes):
+                inds = np.where(det[:, -1] == j)[0]
+                if inds.shape[0] > 0:
+                    cls_dets = det[inds, :-1].astype(np.float32)
                     keep = soft_nms(cls_dets, sigma=0.5, Nt=0.30, threshold=cfg.confidence_threshold, method=1)
                     cls_dets = cls_dets[keep, :]
-                all_boxes[j][i] = cls_dets
-                if vis:
-                    vis_detections(im, imdb.classes[j], cls_dets, i)
+                    all_boxes[j][i] = cls_dets
+                    if vis:
+                        vis_detections(im, imdb.classes[j], cls_dets, i)
 
-        print 'im_detect: {:d}/{:d}'.format(i + 1, num_images)
+            print 'im_detect: {:d}/{:d}'.format(i + 1, num_images)
 
-    det_file = os.path.join(output_dir, 'detections.pkl')
-    with open(det_file, 'wb') as f:
-        cPickle.dump(all_boxes, f, cPickle.HIGHEST_PROTOCOL)
+        with open(det_file, 'wb') as f:
+            cPickle.dump(all_boxes, f, cPickle.HIGHEST_PROTOCOL)
 
     if imdb.name == 'voc_2012_test':
         print 'Saving detections'
