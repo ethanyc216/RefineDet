@@ -111,9 +111,12 @@ def vis_detections(im, class_name, dets, img_id, thresh=0.1):
             )
         plt.text(bbox[0], bbox[1], '{}  {:.3f}'.format(class_name, score), color='r')
     plt.show()
-    if not os.path.exists('tmp/'):
-        os.mkdir('tmp/')
-    plt.savefig('tmp/' + '{}_dets.jpg'.format(img_id), bbox_inches="tight")
+
+    # save to file
+    vis_root = cfg.vis_root if cfg.has_key('vis_root') else 'tmp'
+    if not os.path.exists(vis_root):
+        os.makedirs(vis_root)
+    plt.savefig(os.path.join(vis_root, '{}_dets.jpg'.format(img_id)), bbox_inches="tight")
 
 
 def bbox_vote(det):
