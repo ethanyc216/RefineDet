@@ -1,1 +1,0 @@
-/ssd/fzhou/stanford_cars/devkit/val.txt

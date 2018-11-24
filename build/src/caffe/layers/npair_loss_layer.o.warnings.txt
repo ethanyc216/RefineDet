@@ -1,0 +1,8 @@
+src/caffe/layers/npair_loss_layer.cpp: In instantiation of 'void caffe::NPairLossLayer<Dtype>::Forward_cpu(const std::vector<caffe::Blob<Dtype>*>&, const std::vector<caffe::Blob<Dtype>*>&) [with Dtype = float]':
+src/caffe/layers/npair_loss_layer.cpp:203:1:   required from here
+src/caffe/layers/npair_loss_layer.cpp:157:10: warning: unused variable '_Q_diff' [-Wunused-variable]
+   Dtype* _Q_diff = bottom[0]->mutable_cpu_diff();
+          ^
+src/caffe/layers/npair_loss_layer.cpp: In instantiation of 'void caffe::NPairLossLayer<Dtype>::Forward_cpu(const std::vector<caffe::Blob<Dtype>*>&, const std::vector<caffe::Blob<Dtype>*>&) [with Dtype = double]':
+src/caffe/layers/npair_loss_layer.cpp:203:1:   required from here
+src/caffe/layers/npair_loss_layer.cpp:157:10: warning: unused variable '_Q_diff' [-Wunused-variable]

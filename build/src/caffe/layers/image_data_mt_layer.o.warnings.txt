@@ -1,0 +1,6 @@
+src/caffe/layers/image_data_mt_layer.cpp: In member function 'void caffe::ImageDataMTLayer<Dtype>::DataLayerSetUp(const std::vector<caffe::Blob<Dtype>*>&, const std::vector<caffe::Blob<Dtype>*>&) [with Dtype = double]':
+src/caffe/layers/image_data_mt_layer.cpp:55:17: warning: 'pos' may be used uninitialized in this function [-Wmaybe-uninitialized]
+     label = atoi(line.substr(pos + 1).c_str());
+                 ^
+src/caffe/layers/image_data_mt_layer.cpp: In member function 'void caffe::ImageDataMTLayer<Dtype>::DataLayerSetUp(const std::vector<caffe::Blob<Dtype>*>&, const std::vector<caffe::Blob<Dtype>*>&) [with Dtype = float]':
+src/caffe/layers/image_data_mt_layer.cpp:55:17: warning: 'pos' may be used uninitialized in this function [-Wmaybe-uninitialized]

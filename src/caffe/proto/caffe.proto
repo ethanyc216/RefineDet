@@ -542,6 +542,7 @@ message LayerParameter {
   optional TileParameter tile_param = 138;
   optional VideoDataParameter video_data_param = 207;
   optional WindowDataParameter window_data_param = 129;
+  optional int32 group_id = 208 [default = 0];
 }
 
 // Message that stores parameters used to apply transformation

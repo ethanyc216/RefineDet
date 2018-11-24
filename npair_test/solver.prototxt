@@ -1,0 +1,20 @@
+net: "train_NPairData_ResNet32_NPairLoss.prototxt"
+snapshot_prefix: "/ssd-docker/model/tmp/test/"
+
+#test_initialization: false
+
+max_iter: 50000 # 5 epoch 3GPU
+display: 100
+snapshot: 2500
+
+lr_policy: "step"
+gamma: 0.96
+stepsize: 500
+
+base_lr: 0.001  #0.001
+momentum: 0.9
+weight_decay: 0.0002
+# clip_gradients: 20
+
+debug_info: false
+solver_mode: GPU
