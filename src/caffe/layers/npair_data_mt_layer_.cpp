@@ -191,6 +191,8 @@ void NPairDataMTLayer<Dtype>::load_batch(Batch<Dtype>* batch) {
   Dtype* prefetch_label = batch->label_.mutable_cpu_data();
   int rand_image_num = 2;
 
+  vector<pair<string, vector<int>>> data_pair_list;
+
   int item_id = 0;
   while (true) {
     bool is_finish = false;
@@ -207,18 +209,7 @@ void NPairDataMTLayer<Dtype>::load_batch(Batch<Dtype>* batch) {
       const vector<int>& labels = filename_pair.second;      
       // int label = leaf_sample_images[i].second;
 
-      // load image
-      cv::Mat cv_img = ReadImageToCVMat(root_folder + '/' + filename, new_height, new_width, is_color);
-      CHECK(cv_img.data) << "Could not load " << filename;
-
-      // transform feature
-      int offset = batch->data_.offset(item_id);
-      this->transformed_data_.set_cpu_data(prefetch_data + offset);
-      this->data_transformer_->Transform(cv_img, &(this->transformed_data_));
-      // prefetch_label[item_id] = label;
-      for (int l = 0; l < num_label; ++l) {
-        prefetch_label[item_id * num_label + l] = labels[l];
-      }
+      data_pair_list.push_back(filename_pair);
 
       item_id ++;
       if (item_id >= batch_size) {
@@ -234,6 +225,30 @@ void NPairDataMTLayer<Dtype>::load_batch(Batch<Dtype>* batch) {
       break;
     }
   }
+  ///
+  caffe::rng_t* prefetch_rng =
+    static_cast<caffe::rng_t*>(prefetch_rng_->generator());
+  shuffle(data_pair_list.begin(), data_pair_list.end(), prefetch_rng);
+  item_id = 0;
+  for (int i=0; i<data_pair_list.size(); i++){
+    const pair<string, vector<int>> filename_pair = data_pair_list[i];
+    const string filename = filename_pair.first;
+    const vector<int> labels = filename_pair.second;
+    // load image
+    cv::Mat cv_img = ReadImageToCVMat(root_folder + '/' + filename, new_height, new_width, is_color);
+    CHECK(cv_img.data) << "Could not load " << filename;
+
+    // transform feature
+    int offset = batch->data_.offset(item_id);
+    this->transformed_data_.set_cpu_data(prefetch_data + offset);
+    this->data_transformer_->Transform(cv_img, &(this->transformed_data_));
+    // prefetch_label[item_id] = label;
+    for (int l = 0; l < num_label; ++l) {
+      prefetch_label[item_id * num_label + l] = labels[l];
+    } 
+    item_id ++;
+  }
+  ///
 }
 
 INSTANTIATE_CLASS(NPairDataMTLayer);
