@@ -268,6 +268,10 @@ cv::Mat ReadImageToCVMat(const string& filename,
 
 cv::Mat ReadImageToCVMat(const string& filename);
 
+bool ReadImageToCVMat(const string& filename,
+    const int height, const int width, const bool is_color,
+    const float max_aspect_ratio, const float min_aspect_ratio, cv::Mat & cv_img);
+
 cv::Mat DecodeDatumToCVMatNative(const Datum& datum);
 cv::Mat DecodeDatumToCVMat(const Datum& datum, bool is_color);
 
