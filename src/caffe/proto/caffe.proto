@@ -544,6 +544,7 @@ message LayerParameter {
   optional WindowDataParameter window_data_param = 129;
   optional int32 group_id = 208 [default = 0];
   optional MarginInnerProductParameter margin_inner_product_param = 147;
+  optional ShuffleChannelParameter shuffle_channel_param = 148;
 }
 
 // Message that stores parameters used to apply transformation
@@ -1948,3 +1949,8 @@ message MarginInnerProductParameter {
   optional int32 iteration = 8 [default = 0];
   optional float lambda_min = 9 [default = 0];
 }
+
+message ShuffleChannelParameter {
+  optional uint32 group = 1[default = 1]; // The number of group
+}
+
