@@ -141,6 +141,55 @@ cv::Mat ReadImageToCVMat(const string& filename) {
   return ReadImageToCVMat(filename, 0, 0, true);
 }
 
+bool ReadImageToCVMat(const string& filename,
+    const int height, const int width, const bool is_color,
+    const float max_aspect_ratio, const float min_aspect_ratio,  cv::Mat & cv_img) {
+  int cv_read_flag = (is_color ? CV_LOAD_IMAGE_COLOR :
+      CV_LOAD_IMAGE_GRAYSCALE);
+  cv::Mat cv_img_origin = cv::imread(filename, cv_read_flag);
+  // imwrite("origin.jpg", cv_img_origin);
+  if (!cv_img_origin.data) {
+    LOG(ERROR) << "Could not open or find file " << filename;
+    return false;
+  }
+  const int orig_width = cv_img_origin.cols;
+  const int orig_height = cv_img_origin.rows;
+  float aspect_ratio = orig_width / (float) orig_height;
+  // if (aspect_ratio < min_aspect_ratio || aspect_ratio > max_aspect_ratio) {
+  //     return false;
+  // }
+  if (height > 0 && width > 0) {
+    float target_as = (float) width / (float) height;
+    cv_img = cv::Mat::zeros(cv::Size(width, height), CV_8UC3);
+    cv::Mat target_img;
+    if (target_as < aspect_ratio) {
+        // which means target is slimmer
+        float scale = (float) width / orig_width;
+        int scaled_width = width;
+        int scaled_height = std::min(height, (int)(scale * orig_height));
+        cv::resize(cv_img_origin, target_img, cv::Size(scaled_width, scaled_height));
+        int start_x = 0;
+        int start_y = 0;
+        cv::Mat roi = cv_img(cv::Rect(start_x, start_y, scaled_width, scaled_height));
+        target_img.copyTo(roi);
+
+    } else {
+        float scale = (float) height / orig_height;
+        int scaled_width = std::min(width, (int)(scale * orig_width));
+        int scaled_height = height;
+        cv::resize(cv_img_origin, target_img, cv::Size(scaled_width, scaled_height));
+        int start_x = (width - scaled_width) / 2;
+        int start_y = 0;
+        cv::Mat roi = cv_img(cv::Rect(start_x, start_y, scaled_width, scaled_height));
+        target_img.copyTo(roi);
+    }
+    // imwrite("resized.jpg", cv_img);
+  } else {
+    cv_img = cv_img_origin;
+  }
+  return true;
+}
+
 // Do the file extension and encoding match?
 static bool matchExt(const std::string & fn,
                      std::string en) {
