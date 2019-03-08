@@ -545,6 +545,7 @@ message LayerParameter {
   optional int32 group_id = 208 [default = 0];
   optional MarginInnerProductParameter margin_inner_product_param = 147;
   optional ShuffleChannelParameter shuffle_channel_param = 148;
+  optional MMDParameter mmd_param = 149;
 }
 
 // Message that stores parameters used to apply transformation
@@ -1952,4 +1953,10 @@ message MarginInnerProductParameter {
 
 message ShuffleChannelParameter {
   optional uint32 group = 1[default = 1]; // The number of group
+}
+
+message MMDParameter {
+    optional uint32 kernel_num = 1 [default = 5];
+    optional float kernel_mul = 2 [default = 2];
+    optional bool fix_gamma = 3 [default = false];
 }
