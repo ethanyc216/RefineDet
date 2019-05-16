@@ -18,6 +18,9 @@ void EuclideanLossLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bottom,
   caffe_gpu_dot(count, diff_.gpu_data(), diff_.gpu_data(), &dot);
   Dtype loss = dot / bottom[0]->num() / Dtype(2);
   top[0]->mutable_cpu_data()[0] = loss;
+  Dtype loss_a = sqrt(loss / count * Dtype(2));
+  Dtype ave = bottom[0]->asum_data() / count;
+  printf("loss/data_mean = %f \n", loss_a / ave );
 }
 
 template <typename Dtype>
